@@ -1,0 +1,22 @@
+PODS:
+  - CryptoSwift (1.2.0)
+  - Kingfisher (5.10.1):
+    - Kingfisher/Core (= 5.10.1)
+  - Kingfisher/Core (5.10.1)
+
+DEPENDENCIES:
+  - CryptoSwift
+  - Kingfisher (~> 5.0)
+
+SPEC REPOS:
+  trunk:
+    - CryptoSwift
+    - Kingfisher
+
+SPEC CHECKSUMS:
+  CryptoSwift: 40e374e45291d8dceedcb0d6184da94533eaabdf
+  Kingfisher: eb36b7dfcc78d60877051c92c119a2865972961a
+
+PODFILE CHECKSUM: 5c646c26ca37f22f5155f505f512bd5d1aadbb1e
+
+COCOAPODS: 1.8.4
