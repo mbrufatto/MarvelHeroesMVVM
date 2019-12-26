@@ -11,6 +11,7 @@ import UIKit
 class ListHeroViewController: UIViewController {
     
     @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var searchBar: UISearchBar!
     
     fileprivate var heroViewModel = HeroViewModel()
     
@@ -19,6 +20,7 @@ class ListHeroViewController: UIViewController {
         
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
+        self.searchBar.delegate = self
         
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -26,17 +28,46 @@ class ListHeroViewController: UIViewController {
         layout.minimumInteritemSpacing = 10
         collectionView.setCollectionViewLayout(layout, animated: true)
         
-        heroViewModel.loadCharacters { result in
+        loadData()
+    }
+    
+    private func loadData() {
+        heroViewModel.loadCharacters(offset: self.heroViewModel.offset) { result in
             self.collectionView.reloadData()
         }
     }
-}
-
-extension ListHeroViewController: UICollectionViewDelegate {
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        if offsetY > contentHeight - scrollView.frame.size.height {
+            if self.heroViewModel.numberOfRows(0) < self.heroViewModel.totalHero {
+                self.heroViewModel.offset += 1
+                self.loadData()
+            }
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "heroDetailSegue" {
+            prepareSegueForHeroDetailsViewController(segue: segue)
+        }
+    }
+    
+    private func prepareSegueForHeroDetailsViewController(segue: UIStoryboardSegue) {
+        
+        guard let heroDetailViewController = segue.destination as? HeroDetailViewController, let indexPath =
+            self.collectionView.indexPathsForSelectedItems?.first else {
+            return
+        }
+        
+        let hero = self.heroViewModel.heroAt(indexPath.row)
+        heroDetailViewController.hero = hero
+    }
 }
 
 extension ListHeroViewController: UICollectionViewDataSource {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.heroViewModel.numberOfRows(section)
     }
@@ -63,5 +94,12 @@ extension ListHeroViewController: UICollectionViewDelegateFlowLayout {
         let widthPerItem = collectionView.frame.width / 2 - lay.minimumInteritemSpacing
         
         return CGSize(width:widthPerItem, height:250)
+    }
+}
+
+extension ListHeroViewController: UISearchBarDelegate {
+    func searchBar(_: UISearchBar, textDidChange searchText: String) {
+        self.heroViewModel.searchByHeroName(name: searchText)
+        self.collectionView.reloadData()
     }
 }

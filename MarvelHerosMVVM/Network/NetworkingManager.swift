@@ -11,6 +11,7 @@ import CryptoSwift
 
 struct Resource<T> {
     let url: String
+    let offset: Int
     let parse: (Data) -> T?
 }
 
@@ -29,7 +30,7 @@ final class NetworkingManager {
         charactersURL.queryItems = [URLQueryItem(name: "apikey", value: MarvelAPIConfig.apikey),
                                     URLQueryItem(name: "ts", value: MarvelAPIConfig.ts),
                                       URLQueryItem(name: "hash", value: MarvelAPIConfig.hash),
-                                      URLQueryItem(name: "offset", value: "0")]
+                                      URLQueryItem(name: "offset", value: "\(resource.offset)")]
         
         let finalURL = charactersURL.url
         var request = URLRequest(url: finalURL!)
