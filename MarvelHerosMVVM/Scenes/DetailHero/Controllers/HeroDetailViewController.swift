@@ -16,6 +16,7 @@ class HeroDetailViewController: UIViewController {
     @IBOutlet weak var heroDescription: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
     
+    fileprivate var comicViewModel = ComicViewModel()
     var hero: Hero?
     
     override func viewDidLoad() {
@@ -24,8 +25,10 @@ class HeroDetailViewController: UIViewController {
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
         
+        self.comicViewModel.loadComics(heroId: hero!.id) { result in
+            self.collectionView.reloadData()
+        }
         setupDatas()
-        
     }
     
     private func setupDatas() {
@@ -45,12 +48,31 @@ extension HeroDetailViewController: UICollectionViewDelegate {
 extension HeroDetailViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        <#code#>
+        return self.comicViewModel.numberOfRows(section)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        <#code#>
+     
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "comicCell", for: indexPath) as! ComicCell
+        
+        let comic = comicViewModel.comicAt(indexPath.row)
+        cell.configure(comic)
+        
+        return cell
+    }
+}
+
+
+extension HeroDetailViewController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 10.0, left: 1.0, bottom: 1.0, right: 1.0)
     }
     
-    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let lay = collectionViewLayout as! UICollectionViewFlowLayout
+        let widthPerItem = collectionView.frame.width / 2 - lay.minimumInteritemSpacing
+        
+        return CGSize(width:widthPerItem, height:200)
+    }
 }

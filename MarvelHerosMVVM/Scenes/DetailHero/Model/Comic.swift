@@ -14,11 +14,10 @@ struct Comic: Decodable {
     let thumbnail: Thumbnail
 }
 
-struct ComicData {
+struct ComicData: Decodable {
     let results: [Comic]
 }
 
 struct ComicBase: Decodable {
-    
     let data: ComicData
 }
