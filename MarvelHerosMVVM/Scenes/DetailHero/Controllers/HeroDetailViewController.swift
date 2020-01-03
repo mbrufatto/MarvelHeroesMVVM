@@ -17,6 +17,8 @@ class HeroDetailViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     
     fileprivate var comicViewModel = ComicViewModel()
+    private var heroId: Int = 0
+    
     var hero: Hero?
     
     override func viewDidLoad() {
@@ -25,18 +27,23 @@ class HeroDetailViewController: UIViewController {
         self.collectionView.delegate = self
         self.collectionView.dataSource = self
         
-        self.comicViewModel.loadComics(heroId: hero!.id) { result in
-            self.collectionView.reloadData()
-        }
         setupDatas()
     }
     
     private func setupDatas() {
-        self.heroName.text = hero?.name
-        self.heroDescription.text = hero?.description
         
-        let url = URL(string: (hero?.thumbnail.fullName)!)
-        self.heroImage.kf.setImage(with: url)
+        if let hero = self.hero {
+            hero.name.bind { self.heroName.text = $0 }
+            hero.description.bind { self.heroDescription.text = $0 }
+            hero.id.bind { self.heroId = $0 }
+            
+            let url = URL(string: (hero.thumbnail.fullName))
+            self.heroImage.kf.setImage(with: url)
+            
+            self.comicViewModel.loadComics(heroId: self.heroId) { result in
+                self.collectionView.reloadData()
+            }
+        }
     }
 }
 

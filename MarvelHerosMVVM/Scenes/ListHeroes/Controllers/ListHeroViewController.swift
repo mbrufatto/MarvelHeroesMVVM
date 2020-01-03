@@ -42,7 +42,7 @@ class ListHeroViewController: UIViewController {
         let contentHeight = scrollView.contentSize.height
         if offsetY > contentHeight - scrollView.frame.size.height {
             if self.heroViewModel.numberOfRows(0) < self.heroViewModel.totalHero {
-                self.heroViewModel.offset += 1
+                self.heroViewModel.offset += 20
                 self.loadData()
             }
         }
@@ -86,7 +86,7 @@ extension ListHeroViewController: UICollectionViewDataSource {
 extension ListHeroViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 10.0, left: 1.0, bottom: 1.0, right: 1.0)//here your custom value for spacing
+        return UIEdgeInsets(top: 10.0, left: 1.0, bottom: 1.0, right: 1.0)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

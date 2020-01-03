@@ -41,7 +41,7 @@ class HeroViewModel {
         NetworkingManager().load(resource: heroesResource) { result in
             if let heroData = result {
                 self.updateHero(characters: heroData.data.results)
-                self.totalHero = heroData.data.total
+                heroData.data.total.bind { self.totalHero = $0 }
                 completion(self.heroes)
             } else {
                 completion([Hero]())
@@ -53,7 +53,9 @@ class HeroViewModel {
     func searchByHeroName(name: String) {
         if !name.isEmpty {
             self.filteredHeroes = self.heroes.filter { (heroList) -> Bool in
-                (heroList.name.lowercased().contains(name.lowercased()))
+                var heroName = ""
+                heroList.name.bind { heroName = $0 }
+                return (heroName.lowercased().contains(name.lowercased()))
             }
             self.searchActive = true
         } else {
@@ -62,9 +64,9 @@ class HeroViewModel {
         }
     }
     
-    private func updateHero(characters: [Hero]) {
+    func updateHero(characters: [Hero]) {
         for character in characters {
-            if !self.heroes.contains(where: { $0.id == character.id }) {
+            if !self.heroes.contains(where: { $0.id.value == character.id.value }) {
                 self.heroes.append(character)
             }
         }

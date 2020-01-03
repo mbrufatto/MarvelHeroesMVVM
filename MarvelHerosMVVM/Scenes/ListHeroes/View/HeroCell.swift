@@ -22,6 +22,6 @@ class HeroCell: UICollectionViewCell {
         let url = URL(string: hero.thumbnail.fullName)
         self.heroImage.kf.setImage(with: url)
         
-        self.heroName.text = hero.name
+        hero.name.bind { self.heroName.text = $0}
     }
 }
