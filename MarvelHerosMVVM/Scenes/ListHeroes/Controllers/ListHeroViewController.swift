@@ -102,4 +102,9 @@ extension ListHeroViewController: UISearchBarDelegate {
         self.heroViewModel.searchByHeroName(name: searchText)
         self.collectionView.reloadData()
     }
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        self.heroViewModel.searchActive = false
+        self.searchBar.endEditing(true)
+    }
 }
