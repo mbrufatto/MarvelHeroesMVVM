@@ -20,6 +20,10 @@ class ComicViewModel {
         return self.comics[index]
     }
     
+    func addComics(comics: [Comic]) {
+        self.comics.append(contentsOf: comics)
+    }
+    
     func loadComics(heroId: Int, completion: @escaping([Comic]) ->()) {
         let heroesUrl = "https://gateway.marvel.com/v1/public/characters/\(heroId)/comics"
         
@@ -30,12 +34,11 @@ class ComicViewModel {
         
         NetworkingManager().load(resource: comicsResource) { result in
             if let comicData = result {
-                self.comics = comicData.data.results
+                self.addComics(comics: comicData.data.results)
                 completion(self.comics)
             } else {
                 completion([Comic]())
             }
-            
         }
     }
     
