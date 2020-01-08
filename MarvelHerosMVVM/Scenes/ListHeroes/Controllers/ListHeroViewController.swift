@@ -99,12 +99,19 @@ extension ListHeroViewController: UICollectionViewDelegateFlowLayout {
 
 extension ListHeroViewController: UISearchBarDelegate {
     func searchBar(_: UISearchBar, textDidChange searchText: String) {
-        self.heroViewModel.searchByHeroName(name: searchText)
-        self.collectionView.reloadData()
+        self.heroViewModel.searchByHeroName(name: searchText) { _  in
+            print(self.heroViewModel.searchActive)
+            if !self.heroViewModel.searchActive {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.searchBar.resignFirstResponder()
+                }
+            }
+            self.collectionView.reloadData()
+        }
+        
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        self.heroViewModel.searchActive = false
         self.searchBar.endEditing(true)
     }
 }

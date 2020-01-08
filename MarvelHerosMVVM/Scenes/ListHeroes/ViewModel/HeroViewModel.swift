@@ -33,7 +33,7 @@ class HeroViewModel {
     
     func loadCharacters(offset: Int, completion: @escaping([Hero]) ->()) {
         let heroesUrl = "https://gateway.marvel.com/v1/public/characters"
-        let heroesResource = Resource<HeroBase>(url: heroesUrl, offset: offset) { data in
+        let heroesResource = Resource<HeroBase>(url: heroesUrl, offset: offset, heroName: nil) { data in
             let heroData = try? JSONDecoder().decode(HeroBase.self, from: data)
             return heroData
         }
@@ -50,17 +50,26 @@ class HeroViewModel {
         }
     }
     
-    func searchByHeroName(name: String) {
+    func searchByHeroName(name: String, completion: @escaping([Hero]) -> ()) {
         if !name.isEmpty {
-            self.filteredHeroes = self.heroes.filter { (heroList) -> Bool in
-                var heroName = ""
-                heroList.name.bind { heroName = $0 }
-                return (heroName.lowercased().contains(name.lowercased()))
+            let heroesUrl = "https://gateway.marvel.com/v1/public/characters"
+            let heroesResource = Resource<HeroBase>(url: heroesUrl, offset: offset, heroName: name) { data in
+                let heroData = try? JSONDecoder().decode(HeroBase.self, from: data)
+                return heroData
             }
-            self.searchActive = true
+            
+            NetworkingManager().load(resource: heroesResource) { result in
+                if let heroData = result {
+                     self.searchActive = true
+                    self.filteredHeroes = heroData.data.results
+                    completion(self.filteredHeroes)
+                } else {
+                    completion([Hero]())
+                }
+            }
         } else {
             self.searchActive = false
-            self.filteredHeroes = self.heroes
+            completion(self.heroes)
         }
     }
     

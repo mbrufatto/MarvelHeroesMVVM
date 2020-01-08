@@ -27,7 +27,7 @@ class ComicViewModel {
     func loadComics(heroId: Int, completion: @escaping([Comic]) ->()) {
         let heroesUrl = "https://gateway.marvel.com/v1/public/characters/\(heroId)/comics"
         
-        let comicsResource = Resource<ComicBase>(url: heroesUrl, offset: 0) { data in
+        let comicsResource = Resource<ComicBase>(url: heroesUrl, offset: 0, heroName: nil) { data in
             let comicData = try? JSONDecoder().decode(ComicBase.self, from: data)
             return comicData
         }
