@@ -40,8 +40,23 @@ class HeroDetailViewController: UIViewController {
             let url = URL(string: (hero.thumbnail.fullName))
             self.heroImage.kf.setImage(with: url)
             
-            self.comicViewModel.loadComics(heroId: self.heroId) { result in
-                self.collectionView.reloadData()
+            loadData()
+        }
+    }
+    
+    private func loadData(){
+        self.comicViewModel.loadComics(heroId: self.heroId) { result in
+            self.collectionView.reloadData()
+        }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let offsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        if offsetY > contentHeight - scrollView.frame.size.height {
+            if self.comicViewModel.numberOfRows(0) < self.comicViewModel.totalComics {
+                self.comicViewModel.offset += 20
+                self.loadData()
             }
         }
     }

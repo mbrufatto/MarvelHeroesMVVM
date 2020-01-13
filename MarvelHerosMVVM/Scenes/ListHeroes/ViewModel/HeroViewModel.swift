@@ -60,8 +60,9 @@ class HeroViewModel {
             
             NetworkingManager().load(resource: heroesResource) { result in
                 if let heroData = result {
-                     self.searchActive = true
+                    self.searchActive = true
                     self.filteredHeroes = heroData.data.results
+                    heroData.data.total.bind { self.totalHero = $0 }
                     completion(self.filteredHeroes)
                 } else {
                     completion([Hero]())

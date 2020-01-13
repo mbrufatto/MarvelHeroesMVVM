@@ -16,6 +16,7 @@ struct Comic: Decodable {
 
 struct ComicData: Decodable {
     let results: [Comic]
+    let total: Int
 }
 
 struct ComicBase: Decodable {

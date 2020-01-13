@@ -34,6 +34,7 @@ final class NetworkingManager {
         
         if resource.heroName != nil {
             charactersURL.queryItems?.append(URLQueryItem(name: "nameStartsWith", value:resource.heroName))
+            charactersURL.queryItems?.append(URLQueryItem(name: "limit", value:"\(100)"))
         } else {
             charactersURL.queryItems?.append(URLQueryItem(name: "offset", value: "\(resource.offset)"))
         }
